@@ -9,7 +9,7 @@
 #define _XTAL_FREQ 4000000UL
 
 #pragma config OSC = IntRC      // внутрішній генератор IntRC
-#pragma config WDTE = OFF       // вимикаємо сторожовий таймер
+#pragma config WDTE = ON        // додаємо сторожовий таймер для перезапуску, якщо зависає високий рівень
 #pragma config MCLRE = OFF      // GP3 працює як GPIO
 #pragma config CP = OFF         // відключаємо захист коду
 
@@ -25,6 +25,7 @@ static uint8_t lfsr_next(void) {
 static void delay_ms(uint16_t ms) {
     while (ms--) {
         __delay_ms(1);
+        CLRWDT(); // скидаємо сторожовий таймер під час довгих пауз
     }
 }
 

@@ -12,6 +12,6 @@ void main(void){
         if(STATUSbits.GPWUF)__delay_ms(500);
         GPIObits.GP2=1;__delay_ms(1000);GPIObits.GP2=0;
         if(STATUSbits.GPWUF)__delay_ms(500);else __delay_ms(1000);
-        __delay_ms(500);
+        __delay_ms(200);
     }
 }

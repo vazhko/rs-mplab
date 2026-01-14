@@ -9,7 +9,7 @@
 #define _XTAL_FREQ 4000000UL
 
 #pragma config OSC = IntRC      // внутрішній генератор IntRC
-#pragma config WDTE = ON        // додаємо сторожовий таймер для перезапуску, якщо зависає високий рівень
+#pragma config WDTE = OFF        // додаємо сторожовий таймер для перезапуску, якщо зависає високий рівень
 #pragma config MCLRE = OFF      // GP3 працює як GPIO
 #pragma config CP = OFF         // відключаємо захист коду
 
@@ -30,6 +30,7 @@ static void delay_ms(uint16_t ms) {
 }
 
 static void init_ports(void) {
+    OPTION = 0b00000000; 
     GPIO = 0;          // початковий стан на всіх лініях — 0
     TRIS = 0b1011;     // GP2 вихід, інші — входи
 }
@@ -41,14 +42,16 @@ int main(void) {
     init_ports();
 
     for (;;) {
+
         uint8_t span = lfsr_next() & 0x07;
         cycle_high_ms = 1000u + (uint16_t)span * 250u;
         if (cycle_high_ms > 3000u) {
             cycle_high_ms = 3000u;
         }
+
         cycle_low_ms = 4000u - cycle_high_ms;
         GPIObits.GP2 = 1;
-        delay_ms(cycle_high_ms);
+        delay_ms(cycle_low_ms);
         GPIObits.GP2 = 0;
         delay_ms(cycle_low_ms);
     }
